@@ -1,0 +1,4 @@
+limits/memory = 15000
+limits/time = 7200
+display/freq = 1000
+limits/gap = 0.00001

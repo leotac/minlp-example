@@ -1,0 +1,49 @@
+model planning.mod;
+data planning.dat;
+
+# Compute production bounds
+for{t in T}
+ {
+    let min_q[t] := q_coef[1] + q_coef[2]*alpha[t] 
+    + q_coef[3]*min_x 
+    + q_coef[4]*alpha[t]*alpha[t] + q_coef[5]*alpha[t]*min_x 
+    + q_coef[6]*min_x*min_x;
+    
+    let max_q[t] := q_coef[1] + q_coef[2]*alpha[t] 
+    + q_coef[3]*max_x 
+    + q_coef[4]*alpha[t]*alpha[t] + q_coef[5]*alpha[t]*max_x 
+    + q_coef[6]*max_x*max_x;
+
+   let min_u[t] := u_coef[1] + u_coef[2]*alpha[t] + u_coef[3]*min_x 
+    + u_coef[4]*alpha[t]*alpha[t] + u_coef[5]*alpha[t]*min_x 
+    + u_coef[6]*min_x*min_x;
+    
+    let max_u[t] := u_coef[1] + u_coef[2]*alpha[t] + u_coef[3]*max_x 
+    + u_coef[4]*alpha[t]*alpha[t] + u_coef[5]*alpha[t]*max_x 
+    + u_coef[6]*max_x*max_x;
+ }
+
+
+#################################
+###### SOLVER OPTIONS
+################################
+
+option solver scipampl-3.1.0;
+
+problem original: x, q, u, s, z, q_sold, q_bought, 
+                  total_cost, u_balance, q_balance, 
+                  x_lb, x_ub, q_lb, q_ub, u_lb, u_ub, 
+                  u_production, q_production;
+
+problem strong: x, q, u, s, z, q_sold, q_bought, 
+                  total_cost, u_balance, q_balance, 
+                  x_lb, x_ub, q_lb, q_ub, u_lb, u_ub, 
+                  u_production, q_production,
+                  cutting_plane;
+
+solve original;
+solve strong;
+
+#display q_sold, q_bought; 
+#display q, u;
+#display s, z;
